@@ -14,3 +14,10 @@ https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce
 Schema :
 
 ![HRhd2Y0](https://github.com/ranitsarkar-DS/target-sql-case-study/assets/121813854/0a5b759f-8fda-42d6-99ef-c4c0c6827166)
+
+
+# Initial Exploration of Dataset
+
+Before diving into the analysis, we performed an initial exploration of Target’s e-commerce dataset. This involved examining the data, cleaning it, and preparing it for analysis. We verified the column data types in the “customers” table using the following SQL query in BigQuery:
+
+
