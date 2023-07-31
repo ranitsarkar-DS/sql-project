@@ -21,7 +21,7 @@ Schema :
 1. **[Initial Exploration of Dataset](#ini_exp)**
 2. **[Exploring the Growing Trend of E-commerce in Brazil](#grw_trend)**
 3. **[Evolution of E-commerce Orders in the Brazil Region: Unveiling State-wise Trends and Customer Distribution](#evol)**
-4. **[The Impact on Economy: Analyzing Cost Trends and State-wise Price and Freight Values](#impact)**
+4. **[The Impact on Economy: Analyzing Cost Trends and State-wise Price and Freight Values](#imp)**
 5. **[Analyzing Sales, Freight, and Delivery Time: Insights from Brazil](#ana)**
 6. **[Analyzing Payment Types: Insights on Orders and Payment Installments](#pay)**
 7. **[Actionable Insights and Recommendations Based on the Analysis](#act)**
@@ -35,4 +35,9 @@ Before diving into the analysis, we performed an initial exploration of Targetâ€
 
 
 # 2. Exploring the Growing Trend of E-commerce in Brazil <a id='grw_trend'></a>
-
+# 3. Evolution of E-commerce Orders in the Brazil Region: Unveiling State-wise Trends and Customer Distribution <a id='evol'></a>
+# 4. The Impact on Economy: Analyzing Cost Trends and State-wise Price and Freight Values <a id='imp'></a>
+# 5. Analyzing Sales, Freight, and Delivery Time: Insights from Brazil <a id='ana'></a>
+# 6. Analyzing Payment Types: Insights on Orders and Payment Installments <a id='pay'></a>
+# 7. Actionable Insights and Recommendations Based on the Analysis <a id='act'></a>
+# 8. Conclusion <a id='con'></a>
