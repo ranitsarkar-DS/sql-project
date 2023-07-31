@@ -16,8 +16,23 @@ Schema :
 ![HRhd2Y0](https://github.com/ranitsarkar-DS/target-sql-case-study/assets/121813854/0a5b759f-8fda-42d6-99ef-c4c0c6827166)
 
 
-# Initial Exploration of Dataset
+## Table of Contents :
+
+1. **[Initial Exploration of Dataset](#ini_exp)**
+2. **[Exploring the Growing Trend of E-commerce in Brazil](#grw_trend)**
+3. **[Evolution of E-commerce Orders in the Brazil Region: Unveiling State-wise Trends and Customer Distribution](#evol)**
+4. **[The Impact on Economy: Analyzing Cost Trends and State-wise Price and Freight Values](#impact)**
+5. **[Analyzing Sales, Freight, and Delivery Time: Insights from Brazil](#ana)**
+6. **[Analyzing Payment Types: Insights on Orders and Payment Installments](#pay)**
+7. **[Actionable Insights and Recommendations Based on the Analysis](#act)**
+8. **[Conclusion](#con)**
+
+
+
+# 1. Initial Exploration of Dataset <a id='ini_exp'></a>
 
 Before diving into the analysis, we performed an initial exploration of Target’s e-commerce dataset. This involved examining the data, cleaning it, and preparing it for analysis. We verified the column data types in the “customers” table using the following SQL query in BigQuery:
 
+
+# 2. Exploring the Growing Trend of E-commerce in Brazil <a id='grw_trend'></a>
 
