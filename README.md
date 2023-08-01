@@ -325,7 +325,8 @@ ORDER BY
 Sample of the output:
 ![image](https://github.com/ranitsarkar-DS/target-sql-case-study/assets/121813854/9711be32-2505-4f2a-8bb7-79ec09c2ffbc)
 
-Finding Average Time to Delivery and Average Difference in Estimated Delivery State-wise
+### Finding Average Time to Delivery and Average Difference in Estimated Delivery State-wise
+
 To gain insights into the average time taken for delivery and the average difference between estimated and actual delivery, we calculated the averages on a state level using the following SQL query:
 
 SELECT
@@ -350,10 +351,138 @@ ORDER BY
 ![image](https://github.com/ranitsarkar-DS/target-sql-case-study/assets/121813854/0e71ec88-ee33-423b-836b-899477a749a8)
 ![image](https://github.com/ranitsarkar-DS/target-sql-case-study/assets/121813854/74eeb9df-88bf-4796-8683-1dfdd9ba0bae)
 
+From the results, we can observe that São Paulo (SP) has the lowest average time to delivery, while Roraima (RR) has the highest average time to delivery.
 
+### Grouping Data by State and Calculating Mean Freight Value, Time to Delivery, and Difference in Estimated Delivery
 
+To analyze the relationship between freight value, time to delivery, and the difference between estimated and actual delivery on a state level, we calculated the means using the following SQL query:
+
+SELECT
+  c.customer_state,
+  ROUND(AVG(i.freight_value), 2) AS mean_freight_value,
+  ROUND(AVG(DATE_DIFF(o.order_delivered_customer_date, o.order_purchase_timestamp, DAY)), 2) 
+  AS time_to_delivery,
+  ROUND(AVG(DATE_DIFF(o.order_estimated_delivery_date, o.order_delivered_customer_date, DAY)), 2) 
+  AS diff_estimated_delivery
+FROM
+  `target.orders` o
+JOIN
+  `target.order_items` i ON o.order_id = i.order_id
+JOIN
+  `target.customers` c ON o.customer_id = c.customer_id
+GROUP BY
+  c.customer_state
+ORDER BY
+  mean_freight_value;
+
+![image](https://github.com/ranitsarkar-DS/target-sql-case-study/assets/121813854/67a8e5b2-78d0-4014-aa87-6bda42e492f6)
+![image](https://github.com/ranitsarkar-DS/target-sql-case-study/assets/121813854/a25f1319-acab-4bd5-9f83-5cb9ef9d4f3c)
+
+The analysis reveals a weak positive correlation between mean freight value and time to delivery. São Paulo (SP) has the lowest mean freight value, while Roraima (RR) has the highest mean freight value.
+
+Understanding the sales, freight, and delivery time dynamics is crucial for businesses to optimize their operations and improve customer satisfaction. By leveraging SQL queries and analyzing state-wise patterns, companies can gain valuable insights into sales trends, optimize their logistics, and make data-driven decisions to enhance their overall efficiency and customer experience.
 
   
 # 6. Analyzing Payment Types: Insights on Orders and Payment Installments <a id='pay'></a>
+
+### Month over Month Count of Orders for Different Payment Types
+
+To understand the trends in payment types, we analyzed the month-over-month count of orders for different payment types. The following is the SQL query execution:
+
+SELECT
+  p.payment_type,
+  EXTRACT(MONTH FROM o.order_purchase_timestamp) AS month,
+  COUNT(DISTINCT o.order_id) AS order_count
+FROM
+  `target.orders` o
+JOIN
+  `target.order_payments` p
+ON
+  o.order_id = p.order_id
+GROUP BY
+  1, 2
+ORDER BY
+  1, 2;
+
+Sample of the output :
+
+![image](https://github.com/ranitsarkar-DS/target-sql-case-study/assets/121813854/6e4ba8f6-7c8c-4f82-a3ec-15fff0b88408)
+
+The analysis shows an overall uptrend from January to August and another uptrend from September to November. Credit card transactions are the most popular payment method. Notably, credit card transactions are rapidly increasing compared to other payment methods, possibly due to benefits like “buy now, pay later” options or cashback received using credit cards.
+
+### Count of Orders Based on the Number of Payment Installments
+
+To gain insights into the distribution of payment installments, we analyzed the count of orders based on the number of payment installments. The following is the SQL query execution:
+
+
+SELECT
+  p.payment_installments,
+  COUNT(o.order_id) AS order_count
+FROM
+  `target.orders` o
+JOIN
+  `target.order_payments` p
+ON
+  o.order_id = p.order_id
+WHERE
+  o.order_status != 'canceled'
+GROUP BY
+  1
+ORDER BY
+  2 DESC;
+
+![image](https://github.com/ranitsarkar-DS/target-sql-case-study/assets/121813854/7f594c7d-c735-4d34-8239-70c5c95ded58)
+![image](https://github.com/ranitsarkar-DS/target-sql-case-study/assets/121813854/8ae891e8-4cbb-4940-b738-278038276709)
+
+The analysis reveals that the majority of orders (maximum count) have only one payment installment. The highest number of installments is 24, which is associated with 18 orders.
+
+Understanding payment types and installment preferences is essential for businesses to optimize their payment processes and cater to customer preferences. By leveraging SQL queries and analyzing payment trends, companies can make informed decisions to improve payment options, streamline processes, and enhance the overall customer experience.
+
+In conclusion, the analysis provides valuable insights into payment types and installment preferences. It highlights the popularity of credit card transactions, the increasing trend of credit card usage, and the prevalence of single-payment installment orders. These insights can help businesses align their payment strategies and improve customer satisfaction.
+
 # 7. Actionable Insights and Recommendations Based on the Analysis <a id='act'></a>
+
+### Actionable Insights
+
+1. The data reveals that the state of SP has significantly more orders than the next five states combined. This indicates an opportunity for improvement in the other states. Focusing on these states can help increase the number of orders and expand the customer base.
+
+2. Seasonal variations in sales are observed, with increased sales during festive periods. Businesses should plan their marketing and sales strategies accordingly to capitalize on these peak periods and enhance customer satisfaction, resulting in overall sales growth.
+
+3. Improving delivery times in areas with longer delivery durations can have a positive impact on customer satisfaction and encourage repeat purchases. Streamlining logistics and implementing efficient shipping processes are key to achieving this.
+
+4. States like SP and RJ already have high order counts. To further boost sales and foster brand loyalty, it is recommended to focus on customer retention strategies, such as personalized marketing campaigns, loyalty programs, and exceptional customer service experiences.
+
+5. Analyzing customer demographics can provide valuable insights for tailoring products and marketing strategies to specific target audiences. This customization can lead to increased sales and customer satisfaction.
+
+6. The data indicates a decline in orders during September and October. Offering discounts or promotions during off-peak seasons can incentivize customers to make purchases during these periods, thus boosting sales.
+
+7. While the data does not include information on economic conditions, analyzing their impact on sales can help identify areas for improvement and investment, ensuring resilience during economic fluctuations.
+
+### Recommendations
+
+1. Improve logistics and shipping processes to reduce delivery times and enhance customer satisfaction. This includes optimizing warehouse operations, refining shipping routes, and partnering with reliable courier services.
+
+2. Implement customer retention strategies to encourage repeat purchases and foster loyalty. This can be achieved through loyalty programs, referral rewards, and personalized offers.
+   
+3. Evaluate pricing and freight fees to ensure competitiveness in the market while maximizing revenue and profitability. Consider increasing prices or adjusting freight fees as appropriate.
+
+4. Invest in technology and infrastructure to enhance the e-commerce experience. This includes implementing chatbots for customer support, improving website performance, and offering personalized product recommendations based on customer behavior.
+ 
+5. Collaborate with sellers to expand product offerings and improve product quality, catering to diverse customer needs and preferences.
+Leverage social media platforms and influencers to promote products and increase brand awareness, as they have a strong influence on purchasing decisions in Brazil.
+
+6. Enhance the customer service experience by offering chat support services and ensuring prompt and effective responses to customer inquiries.
+Monitor competitor activity and adjust the business strategy accordingly, such as matching or offering better pricing, expanding product offerings, or improving customer service to stay competitive in the market.
+
+7. By implementing these actionable insights and recommendations, businesses can optimize their operations, enhance customer satisfaction, and drive overall sales growth in the Brazilian e-commerce market.
+
+
 # 8. Conclusion <a id='con'></a>
+
+In conclusion, the analysis of e-commerce data in the Brazilian market provides valuable insights into customer buying patterns, sales trends, payment preferences, and delivery experiences. By understanding these patterns and trends, businesses can make informed decisions and implement strategies to optimize their operations and drive growth. Here are the key takeaways from the analysis:
+
+### Key Takeaways
+* The state of SP dominates the e-commerce market in Brazil, indicating the need to focus on other states for potential growth opportunities.
+* Analyzing customer demographics can help tailor products and marketing strategies to specific target audiences, leading to increased sales.
+* Offering discounts during off-peak seasons can incentivize customers and boost sales during slower periods.
+  
