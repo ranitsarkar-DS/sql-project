@@ -138,9 +138,111 @@ To paint a complete picture of the e-commerce scenario in Brazil, it is crucial 
 
 Analyzing the dataset, we explored the presence of seasonality within specific months. By extracting the month from the order purchase timestamp, we calculated the count of distinct order IDs for each month. The following query was executed:
 
+SELECT
+  EXTRACT(MONTH FROM order_purchase_timestamp) AS month,
+  COUNT(DISTINCT order_id) AS order_count
+FROM
+  `target.orders`
+GROUP BY
+  month
+ORDER BY
+  month;
+
+![image](https://github.com/ranitsarkar-DS/target-sql-case-study/assets/121813854/f2fa0ba1-b3f2-4d6e-97e7-e7b6abd7650a)
+
+Considering the limited dataset provided, it is challenging to draw definitive conclusions regarding seasonality trends. However, from the analysis, we can observe some seasonality in the e-commerce orders. The count of orders generally increases from March to August with fluctuations in between. Notably, there is an increase in orders during February and March, coinciding with the Carnival season in Brazil. Additionally, the month of August shows a peak in order count, potentially related to the Festival de Cachaça dedicated to the national liquor, cachaça. It is important to note that further analysis with a larger dataset would be required to validate these seasonality trends.
+
+
+### Understanding Buying Patterns of Brazilian Customers
+
+To gain insights into the buying patterns of Brazilian customers, we analyzed the time of day when most orders were placed. The following SQL query was executed to categorize the order purchase timestamps into four periods: dawn, morning, afternoon, and night.
+
+SELECT
+  CASE
+    WHEN EXTRACT(HOUR FROM o.order_purchase_timestamp) BETWEEN 0 AND 5 THEN 'Dawn'
+    WHEN EXTRACT(HOUR FROM o.order_purchase_timestamp) BETWEEN 6 AND 11 THEN 'Morning'
+    WHEN EXTRACT(HOUR FROM o.order_purchase_timestamp) BETWEEN 12 AND 17 THEN 'Afternoon'
+    WHEN EXTRACT(HOUR FROM o.order_purchase_timestamp) BETWEEN 18 AND 23 THEN 'Night'
+  END AS hour,
+  COUNT(o.order_id) AS order_count
+FROM
+  target.orders o
+JOIN
+  target.customers c
+ON o.customer_id = c.customer_id
+GROUP BY
+  hour
+ORDER BY
+  order_count DESC;
+
+![image](https://github.com/ranitsarkar-DS/target-sql-case-study/assets/121813854/744ec10b-01b4-4425-9163-1b2d3607f9dd)
+
+Based on the analysis, we found that Brazilian customers tend to place most orders during the daytime, specifically in the afternoon and night. This indicates that customers prefer to shop online when they have leisure time or after completing their daily activities. It’s important to note that the assumption here is that the recorded timestamps reflect the correct time zone at the time of purchase.
+
+Understanding the buying patterns of customers helps e-commerce businesses optimize their operations. By identifying peak buying times, companies can allocate resources, such as customer service representatives and inventory, more effectively to meet customer demands and provide a seamless shopping experience.
+
+Analyzing the data in this manner provides valuable insights into the behavior and preferences of Brazilian customers. With this information, e-commerce companies like Target can tailor their marketing strategies and promotional campaigns to specific time periods, maximizing their reach and potential sales.
+
+In conclusion, analyzing the buying patterns of Brazilian customers reveals the growing trend of e-commerce in the country, highlights the importance of considering various factors for a complete understanding of the e-commerce scenario, and sheds light on the preferred time periods for online shopping. Armed with these insights, Target and other e-commerce businesses can make data-driven decisions to enhance their operations and improve customer satisfaction.
 
 # 3. Evolution of E-commerce Orders in the Brazil Region: Unveiling State-wise Trends and Customer Distribution <a id='evol'></a>
+
+### Analyzing Month-on-Month Orders by States
+
+To understand the evolution of e-commerce orders in the Brazil region, we analyzed the month-on-month order counts for each state. The following is the SQL query execution:
+
+SELECT
+  c.customer_state,
+  EXTRACT(month FROM o.order_purchase_timestamp) AS month,
+  COUNT(o.order_purchase_timestamp) AS order_count
+FROM
+  target.orders o
+JOIN
+  target.customers c
+ON
+  o.customer_id = c.customer_id
+GROUP BY
+  c.customer_state, month
+ORDER BY
+  c.customer_state, month;
+
+Sample of the output is shown:
+
+![image](https://github.com/ranitsarkar-DS/target-sql-case-study/assets/121813854/620743ce-0c24-4b6c-af25-1adbeda1d79e)
+
+The analysis shows the month-on-month order counts in each state of Brazil, providing valuable insights into the customer purchase trends on a state-by-state basis. It is evident that São Paulo (SP) consistently has the highest number of orders in any given month, followed by Rio de Janeiro (RJ) and Minas Gerais (MG).
+
+### Distribution of Customers Across Brazilian States
+
+To further explore the e-commerce landscape in Brazil, we examined the distribution of customers across the states. The following SQL query was executed:
+
+SELECT
+  c.customer_state,
+  COUNT(c.customer_id) AS no_of_customers
+FROM
+  `target.customers` c
+GROUP BY
+  c.customer_state
+ORDER BY
+  no_of_customers DESC;
+
+![image](https://github.com/ranitsarkar-DS/target-sql-case-study/assets/121813854/1909269b-6fad-404a-b18d-70cf40d0e4c6)
+![image](https://github.com/ranitsarkar-DS/target-sql-case-study/assets/121813854/97a0f0dd-d0d5-42c0-aa85-d05da7e1f5c4)
+
+
+The data reveals that the state of São Paulo (SP) has the highest number of customers, which can be attributed to its status as the most populous state in Brazil. This finding also aligns with the previous analysis, indicating a positive correlation between the population of a state and its order count.
+
+Understanding the evolution of e-commerce orders and the distribution of customers across Brazilian states is crucial for businesses like Target to tailor their marketing strategies, optimize logistics, and enhance customer experiences. By leveraging this SQL-driven analysis, e-commerce companies can effectively target specific regions, allocate resources strategically, and deliver personalized experiences that cater to the unique preferences and demands of customers in different states.
+
+In conclusion, analyzing the evolution of e-commerce orders and customer distribution across states in Brazil provides valuable insights into the dynamics of the market. By leveraging SQL and data-driven approaches, businesses can gain a competitive edge, drive growth, and maximize their impact in the rapidly evolving e-commerce landscape of the Brazil region.
+
+
 # 4. The Impact on Economy: Analyzing Cost Trends and State-wise Price and Freight Values <a id='imp'></a>
+
+### Examining the Percentage Increase in the Cost of Orders from 2017 to 2018 (January to August)
+
+To understand the impact on the economy, we calculated the percentage increase in the cost of orders from 2017 to 2018, considering only the months from January to August. The following SQL query was executed:
+
 # 5. Analyzing Sales, Freight, and Delivery Time: Insights from Brazil <a id='ana'></a>
 # 6. Analyzing Payment Types: Insights on Orders and Payment Installments <a id='pay'></a>
 # 7. Actionable Insights and Recommendations Based on the Analysis <a id='act'></a>
