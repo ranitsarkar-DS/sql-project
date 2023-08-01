@@ -243,7 +243,117 @@ In conclusion, analyzing the evolution of e-commerce orders and customer distrib
 
 To understand the impact on the economy, we calculated the percentage increase in the cost of orders from 2017 to 2018, considering only the months from January to August. The following SQL query was executed:
 
+SELECT
+  EXTRACT(MONTH FROM o.order_purchase_timestamp) AS month,
+  (
+    (
+      SUM(CASE WHEN EXTRACT(YEAR FROM o.order_purchase_timestamp) = 2018 AND
+      EXTRACT(MONTH FROM o.order_purchase_timestamp) BETWEEN 1 AND 8 THEN
+      p.payment_value END)
+      -
+      SUM(CASE WHEN EXTRACT(YEAR FROM o.order_purchase_timestamp) = 2017 AND
+      EXTRACT(MONTH FROM o.order_purchase_timestamp) BETWEEN 1 AND 8 THEN
+      p.payment_value END)
+    )
+    /
+    SUM(CASE WHEN EXTRACT(YEAR FROM o.order_purchase_timestamp) = 2017 AND
+    EXTRACT(MONTH FROM o.order_purchase_timestamp) BETWEEN 1 AND 8 THEN
+    p.payment_value END)
+  )*100 AS percent_increase
+FROM
+  `target.orders` o
+JOIN
+  `target.order_payments` p ON o.order_id = p.order_id
+WHERE
+  EXTRACT(YEAR FROM o.order_purchase_timestamp) IN (2017, 2018) AND
+  EXTRACT(MONTH FROM o.order_purchase_timestamp) BETWEEN 1 AND 8
+GROUP BY 1
+ORDER BY 1;
+
+![image](https://github.com/ranitsarkar-DS/target-sql-case-study/assets/121813854/f8bf309d-8993-422d-b05c-61b0f03f5525)
+
+The overall percentage increase in the cost of orders from 2017 to 2018, including only the months from January to August, is 138.53%. Upon examining the month-wise increase, January shows the highest percentage increase, followed by February and April.
+
+### Analyzing Mean and Sum of Price and Freight Value by Customer State
+
+To gain insights into the price and freight values on a state level, we calculated the mean and sum of these values by a customer state. The following is the SQL query execution:
+
+SELECT
+  c.customer_state,
+  ROUND(AVG(i.price), 2) AS mean_price,
+  ROUND(SUM(i.price), 2) AS total_price,
+  ROUND(AVG(i.freight_value), 2) AS mean_freight_value,
+  ROUND(SUM(i.freight_value), 2) AS total_freight_value
+FROM
+  `target.orders` o
+JOIN
+  `target.order_items` i ON o.order_id = i.order_id
+JOIN
+  `target.customers` c ON o.customer_id = c.customer_id
+GROUP BY
+  c.customer_state;
+
+![image](https://github.com/ranitsarkar-DS/target-sql-case-study/assets/121813854/e1a3b4a2-d13c-4e60-8ae7-f835fac058b6)
+![image](https://github.com/ranitsarkar-DS/target-sql-case-study/assets/121813854/874ea854-fc39-4799-a800-5ffb0d04f635)
+
+The analysis reveals interesting findings. While São Paulo (SP) has the highest total price value and total freight value, it surprisingly has the lowest average price value and average freight value among all states. On the other hand, the state of Paraíba (PB) has the highest average price value and average freight value.
+
+Understanding the impact on the economy requires a comprehensive analysis of cost trends and price and freight values. By leveraging SQL queries and examining state-wise patterns, businesses can gain valuable insights into the economic landscape, identify potential opportunities for growth, and make data-driven decisions to optimize pricing strategies, enhance logistics, and drive overall economic impact.
+
+
 # 5. Analyzing Sales, Freight, and Delivery Time: Insights from Brazil <a id='ana'></a>
+
+### Calculating Days between Purchasing, Delivery, and Estimated Delivery
+
+To understand the time duration between purchasing an order, its delivery, and the estimated delivery, we calculated the number of days using the following SQL query:
+
+SELECT
+  order_id,
+  DATE_DIFF(order_delivered_customer_date, order_purchase_timestamp, DAY) 
+  AS delivered_in_days,
+  DATE_DIFF(order_estimated_delivery_date, order_purchase_timestamp, DAY) 
+  AS estimated_delivery_in_days,
+  DATE_DIFF(order_estimated_delivery_date, order_delivered_customer_date, DAY) 
+  AS estimated_minus_actual_delivery_days
+FROM
+  `target.orders`
+WHERE
+  DATE_DIFF(order_delivered_customer_date, order_purchase_timestamp, DAY) IS NOT NULL
+ORDER BY
+  delivered_in_days;
+
+Sample of the output:
+![image](https://github.com/ranitsarkar-DS/target-sql-case-study/assets/121813854/9711be32-2505-4f2a-8bb7-79ec09c2ffbc)
+
+Finding Average Time to Delivery and Average Difference in Estimated Delivery State-wise
+To gain insights into the average time taken for delivery and the average difference between estimated and actual delivery, we calculated the averages on a state level using the following SQL query:
+
+SELECT
+  c.customer_state,
+  ROUND(AVG(DATE_DIFF(order_delivered_customer_date, order_purchase_timestamp, DAY)), 2) 
+  AS avg_time_to_delivery,
+  ROUND(AVG(DATE_DIFF(order_estimated_delivery_date, order_delivered_customer_date, DAY)), 2) 
+  AS avg_diff_estimated_delivery
+FROM
+  `target.orders` o
+JOIN
+  `target.customers` c ON o.customer_id = c.customer_id
+WHERE
+  DATE_DIFF(order_purchase_timestamp, order_delivered_customer_date, DAY) IS NOT NULL
+  AND
+  DATE_DIFF(order_estimated_delivery_date, order_delivered_customer_date, DAY) IS NOT NULL
+GROUP BY
+  c.customer_state
+ORDER BY
+  avg_time_to_delivery;
+
+![image](https://github.com/ranitsarkar-DS/target-sql-case-study/assets/121813854/0e71ec88-ee33-423b-836b-899477a749a8)
+![image](https://github.com/ranitsarkar-DS/target-sql-case-study/assets/121813854/74eeb9df-88bf-4796-8683-1dfdd9ba0bae)
+
+
+
+
+  
 # 6. Analyzing Payment Types: Insights on Orders and Payment Installments <a id='pay'></a>
 # 7. Actionable Insights and Recommendations Based on the Analysis <a id='act'></a>
 # 8. Conclusion <a id='con'></a>
