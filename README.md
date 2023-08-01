@@ -10,6 +10,7 @@ written by customers.
 The dataset is taken from kaggle : 
 https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce
 
+All queries link : https://console.cloud.google.com/bigquery?sq=1059031105461:22193697200f474095984949d6fbbe88
 
 Schema :
 
